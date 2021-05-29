@@ -1,0 +1,95 @@
+import discord
+import os
+import random
+import asyncio
+from replit import db
+from keep_alive import keep_alive
+from discord.ext import tasks
+from discord.ext import commands
+import discord.utils
+
+
+client = discord.Client()
+client = commands.Bot(command_prefix = '.')
+pic = 'http://logok.org/wp-content/uploads/2014/12/WHO-logo-1024x762.png'
+
+
+def is_me(ctx):
+  return ctx.author.id == 681570519018897446
+
+def channel_tos(ctx):
+  return ctx.channel.id == 'channeltos'
+
+def channel_announcements(ctx):
+  return ctx.channel.id == 'channelannouncements'
+
+
+
+@client.command(pass_context=True)
+@commands.check(is_me)
+async def echo(ctx, *, message):
+  output = ''
+  output += message
+
+  embed = discord.Embed(
+    title = 'Announcement',
+    description = '',
+    colour = discord.Colour.blue()
+  )
+  embed.set_footer(text = 'Developed by nate_#4724')
+  embed.set_thumbnail(url = pic)
+  #embed.set_author(name= 'Announcements')
+  embed.add_field(name = 'Info:', value = f'\n {output}', inline = True)
+
+  await ctx.channel.purge(limit = 1)
+  await ctx.send(embed=embed)  
+  
+
+@client.command(pass_context=True)
+@commands.check(is_me)
+@commands.check(channel_announcements)
+async def info(ctx):
+  embed = discord.Embed(
+    title = 'Need to know information',
+    description = 'Please follow and abide by these rules while in this server.',
+    colour = discord.Colour.blue()
+  )
+  embed.set_footer(text = 'Developed by nate_#4724')
+  embed.set_image(url = pic)
+  embed.set_thumbnail(url = pic)
+  embed.set_author(name= 'Announcements')
+  embed.add_field(name = 'Important \n', value = f'Welcome to the server! Please check out rules for information on conduct. Also please send all position papers to the email {email} and have a great time!', inline = True)
+
+  await ctx.channel.purge(limit = 500) 
+  await ctx.send(embed=embed)  
+
+
+
+@client.command(pass_context=True)
+@commands.check(is_me)
+@commands.check(channel_tos)
+async def rules(ctx):
+  embed = discord.Embed(
+    title = 'Rules',
+    description = 'Please follow and abide by these rules while in this server.',
+    colour = discord.Colour.blue()
+  )
+  embed.set_footer(text = 'Developed by nate_#4724')
+  embed.set_thumbnail(url = pic)
+  embed.set_author(name= 'WHO')
+  embed.add_field(name = 'General Rules \n', value = f"These are basic rules that must be followed in order to remain within the server. We reserve the right to provide punishment equal to the rules broken including bans, kicks, and mutes to those that do not follow these rules. \n \n 1. Follow the Discord TOS \n \n 2. No posting NSFW Content \n \n 3. Follow the MUN rules. Maintain the same amount of respect you have for each other during your time in this server. This means no drama no inapropriate conduct and maintain civility. \n \n 4. This is not school moderated however we are moderating this server which means if any inapropriate conduct is seen it will be reported to your student advisor. Please remain civil and treat this just like you would a google meet.", inline = True)
+
+  await ctx.channel.purge(limit = 500)
+  await ctx.send(embed=embed)
+
+
+@client.event
+async def on_ready():
+    
+    await client.change_presence(activity=discord.Game(name='WHO MUN Support'))
+    print('Bot Is Ready')
+
+
+keep_alive()
+
+client.run(os.getenv('Token'))
